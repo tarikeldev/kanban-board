@@ -7,7 +7,7 @@ import BoardContainer from "./components/board/board-container/board-container"
 function App() {
   return (
     <>
-     <div className="">
+     <div className="bg-offwhite">
       <NavBar/>
      <BoardContainer/>
     </div>
