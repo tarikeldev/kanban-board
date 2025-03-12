@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 
 import "./board-container.css";
+import BoardTask from "../board-task/board-task";
 function lol() {
   console.log("dddddd");
 }
@@ -18,26 +19,8 @@ function BoardContainer() {
         <CardHeader>
           <CardTitle>To Do</CardTitle>
           <CardDescription className="grid gap-8">  
-          {/* <div className=" flex items-center space-x-4 rounded-md border p-4">
-           <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none">
-              Push Notifications
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Send notifications to device.
-            </p>
-          </div>
-         </div>
-         <div className=" flex items-center space-x-4 rounded-md border p-4">
-           <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none">
-              Push Notifications
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Send notifications to device.
-            </p>
-          </div>
-         </div> */}
+ <BoardTask/>
+ 
          </CardDescription>
         </CardHeader>
         <CardContent>
