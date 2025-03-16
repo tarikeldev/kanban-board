@@ -1,30 +1,27 @@
+import TaskEntity from "@/domain/board-entities";
+import { useState } from "react";
 
-function BoardTask() {
+interface taskProps {
+  getTask : (task : TaskEntity) => void;
+  task: TaskEntity;
+}
+
+
+
+function BoardTask({getTask,task}: taskProps) {
+  const [taskDrag, setTaskDrag] = useState(task);
+  const handleDrag = ($event:any) => {
+ 
+    setTaskDrag($event.target.dataset.item);
+    getTask(taskDrag)
+  };
   return (
-  <div className="grid gap-8">
-    <div className=" flex items-center space-x-4 rounded-md border p-4 border-t-8 border-t-cyan-500">
-           <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none ">
-              TASK-0001 | Add a nav bar
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Assigned to Tarik
-            </p>
-          </div>
-         </div>
-          
-         <div className=" flex items-center space-x-4 rounded-md border p-4 border-t-8 border-t-purple-500">
-           <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none ">
-              TASK-1345 | Suivi les fichiers medical
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Assigned to Unkown
-            </p>
-          </div>
-         </div>
-          
-  </div>
+    <div className="items-center rounded-md border p-4 border-t-8 border-t-cyan-500 mt-6" data-item={task} draggable onDragStart={e=>handleDrag(e)} >
+      <div className="flex-1 space-y-1">
+        <p className="text-sm font-medium leading-none">{task.title}</p>
+        <p className="text-sm text-muted-foreground">{task.assigne}</p>
+      </div>
+    </div>
   );
 }
 
