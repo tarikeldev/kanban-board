@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -82,35 +81,40 @@ function BoardCards() {
 
   const [listTasks, setTasks] = useState<any[]>(tasks);
   const [getTask, setTaskDrag] = useState<TaskEntity>();
-  const handleDragOver = (id: number) => {
-    if (getTask && listTasks.length > 0) {
+  const handleOnDrop = (e :any, id: number) => {
+    e.preventDefault()    
+    if (typeof getTask == 'object' && listTasks.length > 0 && id > 0) {
       getTask.boardId = id;
       setTasks([...listTasks, (listTasks[getTask.id - 1].boardId = id)]);
     }
   };
 
+  const handleOnDragOver = (e: React.DragEvent)=> {
+    e.preventDefault()
+  }
+
   return boards.map((card, index) => (
-    <Card
+    <Card key={card.id}
       className={"col-start" + index + 1 + "shadow-md shadow-gray-400 "}
-      onDragOverCapture={(e)=>handleDragOver(card.id)}>
+      
+      onDragOver={handleOnDragOver}
+      onDrop={(e)=>handleOnDrop(e,card.id)}>
       <CardHeader>
         <CardTitle>{card.title}</CardTitle>
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
-      <CardContent key={index}>
+      <CardContent key={card.id}>
         {listTasks
           .filter((x) => x.boardId == card.id)
           .map((task: TaskEntity) => {
             return (
-              <div key={task.id} className="grid gap-10 cursor-pointer">
+              <div key={task.id} className="grid gap-10" >
                 <BoardTask getTask={setTaskDrag} task={task} />
               </div>
             );
           })}
       </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
+ 
     </Card>
   ));
 }

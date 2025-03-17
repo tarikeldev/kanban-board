@@ -10,13 +10,12 @@ interface taskProps {
 
 function BoardTask({getTask,task}: taskProps) {
   const [taskDrag, setTaskDrag] = useState(task);
-  const handleDrag = ($event:any) => {
- 
-    setTaskDrag($event.target.dataset.item);
+  const handleDrag = (currentTask: TaskEntity) => {
+    setTaskDrag(currentTask);
     getTask(taskDrag)
   };
   return (
-    <div className="items-center rounded-md border p-4 border-t-8 border-t-cyan-500 mt-6" data-item={task} draggable onDragStart={e=>handleDrag(e)} >
+    <div className="items-center rounded-md border p-4 border-t-8 border-t-cyan-500 mt-6" data-item={task} draggable onDragStart={e=>handleDrag(task)} >
       <div className="flex-1 space-y-1">
         <p className="text-sm font-medium leading-none">{task.title}</p>
         <p className="text-sm text-muted-foreground">{task.assigne}</p>
