@@ -12,7 +12,7 @@ import { Link, NavigationMenu } from "@radix-ui/react-navigation-menu";
   
   const Navbar = () => {
     return (
-      <Card className="container bg-card py-3 px-4 border-0 flex items-center justify-between gap-6 rounded-2xl mt-5">
+      <Card className="col-span-12 row-span-2 p-4 border border-gray-300 rounded-lg shadow-sm bg-gray-100">
   
         <ul className="hidden md:flex items-center gap-10 text-card-foreground">
           <li className="text-primary font-medium">

@@ -9,7 +9,7 @@ import {
 import "./board-container.css";
 import BoardTask from "../board-task/board-task";
 import TaskEntity from "@/domain/board-entities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tasks: TaskEntity[] = [
   {
@@ -43,7 +43,7 @@ const tasks: TaskEntity[] = [
     boardId: 4,
   },
 ];
-const boards: any[] = [
+export const boards: any[] = [
   {
     id: 1,
     title: "To Do",
@@ -68,24 +68,40 @@ const boards: any[] = [
     //order: 1 //means which column the board exist
     tasks: new Array<TaskEntity>(),
   },
+  {
+    id: 5,
+    title: "Testing",
+    //order: 1 //means which column the board exist
+    tasks: new Array<TaskEntity>(),
+  },
 ];
-function BoardContainer() {
+function BoardContainer({addTask} : {addTask: TaskEntity}) {
+  console.log("adddTas",addTask);
+  
   return (
-    <div className="grid grid-cols-4 m-5  card container gap-8">
-      {BoardCards()}
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+      {BoardCards(addTask)}
     </div>
   );
 }
 
-function BoardCards() {
+function BoardCards(addTask : TaskEntity) {
 
-  const [listTasks, setTasks] = useState<any[]>(tasks);
+  const [listTasks, setTasks] = useState<TaskEntity[]>(tasks);
   const [getTask, setTaskDrag] = useState<TaskEntity>();
+  addTask.id = listTasks.length + 1
+  useEffect(() => {
+    if (addTask && addTask.title && addTask.boardId) {
+      setTasks(prevTasks => [...prevTasks, addTask]);
+    }
+}, [addTask]); 
+  console.log("dddd listTasks",listTasks);
+
   const handleOnDrop = (e :any, id: number) => {
     e.preventDefault()    
     if (typeof getTask == 'object' && listTasks.length > 0 && id > 0) {
       getTask.boardId = id;
-      setTasks([...listTasks, (listTasks[getTask.id - 1].boardId = id)]);
+      setTasks([...listTasks]);
     }
   };
 
@@ -93,9 +109,9 @@ function BoardCards() {
     e.preventDefault()
   }
 
-  return boards.map((card, index) => (
+  return boards.map((card) => (
     <Card key={card.id}
-      className={"col-start" + index + 1 + "shadow-md shadow-gray-400 "}
+      className="border-gray-200 rounded-lg bg-white"
       
       onDragOver={handleOnDragOver}
       onDrop={(e)=>handleOnDrop(e,card.id)}>
