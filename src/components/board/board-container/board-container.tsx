@@ -11,38 +11,6 @@ import BoardTask from "../board-task/board-task";
 import TaskEntity from "@/domain/board-entities";
 import { useEffect, useState } from "react";
 
-const tasks: TaskEntity[] = [
-  {
-    id: 1,
-    title: "Task-0001",
-    assigne: "Tarik1",
-    boardId: 1,
-  },
-  {
-    id: 2,
-    title: "Task-2002",
-    assigne: "Tarik2",
-    boardId: 1,
-  },
-  {
-    id: 3,
-    title: "Task-333",
-    assigne: "Ayo",
-    boardId: 2,
-  },
-  {
-    id: 4,
-    title: "Task-444",
-    assigne: "Islam",
-    boardId: 3,
-  },
-  {
-    id: 5,
-    title: "Task-0001",
-    assigne: "Alaa",
-    boardId: 4,
-  },
-];
 export const boards: any[] = [
   {
     id: 1,
@@ -75,6 +43,29 @@ export const boards: any[] = [
     tasks: new Array<TaskEntity>(),
   },
 ];
+const generateTasks = (count: number): TaskEntity[] => {
+  const tasks: TaskEntity[] = [];
+  const assignees = ["Tarik", "Ayo", "Islam", "Alaa", "Sara", "Alex", "Mohammed", "Fatima", "John", "Priya", "Carlos", "Mei"];
+  
+  for (let i = 1; i <= count; i++) {
+    const paddedId = i.toString().padStart(4, '0');
+    const assigneeIndex = Math.floor(Math.random() * assignees.length);
+    const boardId = Math.floor(Math.random() * 5) + 1; // Random board ID between 1-5
+    
+    tasks.push({
+      id: i,
+      title: `Task-${paddedId}`,
+      assigne: assignees[assigneeIndex] + (Math.floor(Math.random() * 5) + 1), // Add random number suffix
+      boardId: boardId,
+    });
+  }
+  
+  return tasks;
+};
+
+const stressTestTasks: TaskEntity[] = generateTasks(10);
+const tasks: TaskEntity[] = stressTestTasks
+
 function BoardContainer({addTask} : {addTask: TaskEntity}) {
   console.log("adddTas",addTask);
   
