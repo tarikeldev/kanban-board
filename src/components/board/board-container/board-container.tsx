@@ -9,41 +9,9 @@ import {
 import "./board-container.css";
 import BoardTask from "../board-task/board-task";
 import TaskEntity from "@/domain/board-entities";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const tasks: TaskEntity[] = [
-  {
-    id: 1,
-    title: "Task-0001",
-    assigne: "Tarik1",
-    boardId: 1,
-  },
-  {
-    id: 2,
-    title: "Task-2002",
-    assigne: "Tarik2",
-    boardId: 1,
-  },
-  {
-    id: 3,
-    title: "Task-333",
-    assigne: "Ayo",
-    boardId: 2,
-  },
-  {
-    id: 4,
-    title: "Task-444",
-    assigne: "Islam",
-    boardId: 3,
-  },
-  {
-    id: 5,
-    title: "Task-0001",
-    assigne: "Alaa",
-    boardId: 4,
-  },
-];
-const boards: any[] = [
+export const boards: any[] = [
   {
     id: 1,
     title: "To Do",
@@ -68,24 +36,63 @@ const boards: any[] = [
     //order: 1 //means which column the board exist
     tasks: new Array<TaskEntity>(),
   },
+  {
+    id: 5,
+    title: "Testing",
+    //order: 1 //means which column the board exist
+    tasks: new Array<TaskEntity>(),
+  },
 ];
-function BoardContainer() {
+const generateTasks = (count: number): TaskEntity[] => {
+  const tasks: TaskEntity[] = [];
+  const assignees = ["Tarik", "Ayo", "Islam", "Alaa", "Sara", "Alex", "Mohammed", "Fatima", "John", "Priya", "Carlos", "Mei"];
+  
+  for (let i = 1; i <= count; i++) {
+    const paddedId = i.toString().padStart(4, '0');
+    const assigneeIndex = Math.floor(Math.random() * assignees.length);
+    const boardId = Math.floor(Math.random() * 5) + 1; // Random board ID between 1-5
+    
+    tasks.push({
+      id: i,
+      title: `Task-${paddedId}`,
+      assigne: assignees[assigneeIndex] + (Math.floor(Math.random() * 5) + 1), // Add random number suffix
+      boardId: boardId,
+    });
+  }
+  
+  return tasks;
+};
+
+const stressTestTasks: TaskEntity[] = generateTasks(10);
+const tasks: TaskEntity[] = stressTestTasks
+
+function BoardContainer({addTask} : {addTask: TaskEntity}) {
+  console.log("adddTas",addTask);
+  
   return (
-    <div className="grid grid-cols-4 m-5  card container gap-8">
-      {BoardCards()}
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+      {BoardCards(addTask)}
     </div>
   );
 }
 
-function BoardCards() {
+function BoardCards(addTask : TaskEntity) {
 
-  const [listTasks, setTasks] = useState<any[]>(tasks);
+  const [listTasks, setTasks] = useState<TaskEntity[]>(tasks);
   const [getTask, setTaskDrag] = useState<TaskEntity>();
+  addTask.id = listTasks.length + 1
+  useEffect(() => {
+    if (addTask && addTask.title && addTask.boardId) {
+      setTasks(prevTasks => [...prevTasks, addTask]);
+    }
+}, [addTask]); 
+  console.log("dddd listTasks",listTasks);
+
   const handleOnDrop = (e :any, id: number) => {
     e.preventDefault()    
     if (typeof getTask == 'object' && listTasks.length > 0 && id > 0) {
       getTask.boardId = id;
-      setTasks([...listTasks, (listTasks[getTask.id - 1].boardId = id)]);
+      setTasks([...listTasks]);
     }
   };
 
@@ -93,9 +100,9 @@ function BoardCards() {
     e.preventDefault()
   }
 
-  return boards.map((card, index) => (
+  return boards.map((card) => (
     <Card key={card.id}
-      className={"col-start" + index + 1 + "shadow-md shadow-gray-400 "}
+      className="border-gray-200 rounded-lg bg-white"
       
       onDragOver={handleOnDragOver}
       onDrop={(e)=>handleOnDrop(e,card.id)}>
