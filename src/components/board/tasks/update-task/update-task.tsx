@@ -58,6 +58,7 @@ function UpdateTask({ task, isOpen, setDialogOpen, taskUpdate }:
                 type="text"
                 placeholder="Task name"
                  name="title"
+                 value={editTask.title}
                 onChange={handleOnChange}
               />
             </div>
