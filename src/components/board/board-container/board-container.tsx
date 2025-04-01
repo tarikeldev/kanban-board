@@ -86,7 +86,6 @@ function BoardCards(addTask : TaskEntity) {
       setTasks(prevTasks => [...prevTasks, addTask]);
     }
 }, [addTask]); 
-  console.log("dddd listTasks",listTasks);
 
   const handleOnDrop = (e :any, id: number) => {
     e.preventDefault()    
@@ -98,6 +97,11 @@ function BoardCards(addTask : TaskEntity) {
 
   const handleOnDragOver = (e: React.DragEvent)=> {
     e.preventDefault()
+  }
+  const getUpdatedTask = (task :  TaskEntity) =>{
+
+      setTasks((prevTasks) => prevTasks.map((x) => (x.id === task.id ? task : x)))
+
   }
 
   return boards.map((card) => (
@@ -116,7 +120,7 @@ function BoardCards(addTask : TaskEntity) {
           .map((task: TaskEntity) => {
             return (
               <div key={task.id} className="grid gap-10" >
-                <BoardTask getTask={setTaskDrag} task={task} />
+                <BoardTask getTask={setTaskDrag} task={task} getUpdateTask={getUpdatedTask} />
               </div>
             );
           })}
