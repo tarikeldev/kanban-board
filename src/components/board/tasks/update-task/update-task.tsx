@@ -19,18 +19,26 @@ import { SelectTrigger } from "@radix-ui/react-select";
 import { Input } from "@/components/ui/input";
 import { boards } from "../../board-container/board-container";
 import { useState } from "react";
+import { useTaskStore } from "@/stores/taskStore";
 
-function UpdateTask({ task, isOpen, setDialogOpen, taskUpdate }: 
+function UpdateTask({ task, isOpen, setDialogOpen }: 
                     { task: TaskEntity, isOpen : boolean, 
-                      setDialogOpen:  (open:boolean) => void, 
-                      taskUpdate:(task:TaskEntity)=>void}) {
+                      setDialogOpen:  (open:boolean) => void}) {
   const [editTask, setTask] = useState<TaskEntity>(task);
+  const setUpdateTask = useTaskStore((state) => state.setUpdateTask);
+  console.log("here inner update in",editTask);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    taskUpdate(editTask);
+    setUpdateTask(editTask);
+
+    ///this is cancels the form before submission
+    setDialogOpen(false);
    };
   const handleOnChange = (e: any) => {
     const value = e.target.value;
+    console.log("here inner update onChange",editTask);
+
     setTask((prev) => ({
       ...prev,
       title: value,
@@ -38,6 +46,8 @@ function UpdateTask({ task, isOpen, setDialogOpen, taskUpdate }:
   };
 
   const handleOnSelect = (value: string) => {
+    console.log("here inner update onSelect",editTask);
+
     setTask((prev) => ({
       ...prev,
       boardId: Number.parseInt(value),
@@ -84,7 +94,7 @@ function UpdateTask({ task, isOpen, setDialogOpen, taskUpdate }:
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
 
-            <Button type="submit" onClick={() => setDialogOpen(false)}>Submit</Button>
+            <Button type="submit">Submit</Button>
             </DialogClose>
           </DialogFooter>
         </form>

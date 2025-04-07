@@ -19,15 +19,16 @@ import { Plus } from "lucide-react"
 import { boards } from "../../board-container/board-container"
 import { useState } from "react"
 import TaskEntity from "@/domain/board-entities"
+import { useTaskStore } from "@/stores/taskStore"
 
 
 
-function AddTask({ onTaskAdded }: { onTaskAdded: (task: any) => void }) {
+function AddTask() {
+  const addTask = useTaskStore(state=>state.setNewTask)
   const [newTask, setNewTask] = useState<TaskEntity>(new TaskEntity())
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    onTaskAdded(newTask)
+    addTask(newTask)
     setNewTask({ id:0, title: "", boardId: 0 })
   }
 
@@ -72,7 +73,7 @@ function AddTask({ onTaskAdded }: { onTaskAdded: (task: any) => void }) {
               />
             </div>
             <div className="grid flex-1 gap-2">
-              <Select name="boardId" value={newTask.boardId?.toString() ?? "1"} onValueChange={handleOnSelect}>
+              <Select name="boardId" value={newTask.boardId?.toString() ?? "0"} onValueChange={handleOnSelect}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select board" />
                 </SelectTrigger>
