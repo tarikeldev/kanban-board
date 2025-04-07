@@ -6,19 +6,18 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
+  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SelectTrigger } from "@radix-ui/react-select";
 import { Input } from "@/components/ui/input";
 import { boards } from "../../board-container/board-container";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTaskStore } from "@/stores/taskStore";
 
 function UpdateTask({ task, isOpen, setDialogOpen }: 
@@ -26,18 +25,17 @@ function UpdateTask({ task, isOpen, setDialogOpen }:
                       setDialogOpen:  (open:boolean) => void}) {
   const [editTask, setTask] = useState<TaskEntity>(task);
   const setUpdateTask = useTaskStore((state) => state.setUpdateTask);
-  console.log("here inner update in",editTask);
-
+ 
+  useEffect(() => {
+    setTask(task);
+  }, [task]);
   const handleSubmit = (e: any) => {
-    e.preventDefault();
-    setUpdateTask(editTask);
-
-    ///this is cancels the form before submission
+    e.preventDefault();    
+     setUpdateTask(editTask);
     setDialogOpen(false);
    };
   const handleOnChange = (e: any) => {
     const value = e.target.value;
-    console.log("here inner update onChange",editTask);
 
     setTask((prev) => ({
       ...prev,
@@ -45,8 +43,7 @@ function UpdateTask({ task, isOpen, setDialogOpen }:
     }));
   };
 
-  const handleOnSelect = (value: string) => {
-    console.log("here inner update onSelect",editTask);
+   const handleOnSelect = (value: string) => {
 
     setTask((prev) => ({
       ...prev,
@@ -61,7 +58,7 @@ function UpdateTask({ task, isOpen, setDialogOpen }:
           <DialogTitle>Update Task</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           <div className="flex flex-col space-y-4 py-4">
             <div className="grid flex-1 gap-2">
               <Input
@@ -92,11 +89,9 @@ function UpdateTask({ task, isOpen, setDialogOpen }:
             </div>
           </div>
           <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-
+ 
             <Button type="submit">Submit</Button>
-            </DialogClose>
-          </DialogFooter>
+           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

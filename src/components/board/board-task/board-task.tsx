@@ -8,13 +8,12 @@ interface taskProps {
 }
 
 function BoardTask({ task }: taskProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const setDraggedTask = useTaskStore((state) => state.setDraggedTask)
-
+  
  
   const handleDrag = (currentTask: TaskEntity) => {
     setDraggedTask(currentTask);
-    console.log("currentTask task", currentTask);
     
   };
   const handleUpdate = () => {

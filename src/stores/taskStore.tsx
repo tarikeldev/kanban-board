@@ -28,6 +28,8 @@ interface TaskStore {
   draggedTask: TaskEntity | null;
   newTask: TaskEntity | null;
   updatedTask: TaskEntity   | null;
+  isOpen: boolean | null;
+  setIsOpen: (isOpen: boolean) => void;
   setNewTask: (params: { title?: string; boardId?: number }) => void;
   setUpdateTask: (task: TaskEntity) => void;
   setDraggedTask: (task: TaskEntity) => void;
@@ -39,6 +41,8 @@ export const useTaskStore = create<TaskStore>((set) => ({
   newTask: null,
   updatedTask: null,
   draggedTask: null,
+  isOpen: null,
+  setIsOpen: (isOpen: boolean) => set({ isOpen: isOpen }),
   setDraggedTask: (task: TaskEntity) => set({ draggedTask: task }),
   setNewTask: (params) => set({
     newTask: {
@@ -50,6 +54,6 @@ export const useTaskStore = create<TaskStore>((set) => ({
   setUpdateTask: (task: TaskEntity) => set({
     updatedTask: task
     }),
-  setListTasks: (tasksd: TaskEntity[]) => set({ tasks: tasksd}),
+  setListTasks: (tasks: TaskEntity[]) => set({ tasks: tasks}),
   }));
 

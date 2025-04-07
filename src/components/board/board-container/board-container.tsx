@@ -57,7 +57,7 @@ function BoardCards() {
   const { newTask, updatedTask, draggedTask, tasks, setListTasks } = useTaskStore();
 
   useEffect(() => {
-    if (updatedTask && updatedTask.title && updatedTask.boardId) {
+    if (updatedTask && updatedTask.title && updatedTask.boardId) {      
       setListTasks(
         tasks.map((x) => (x.id === updatedTask.id ? updatedTask : x))
       );
@@ -67,7 +67,7 @@ function BoardCards() {
   useEffect(() => {
     if (newTask && newTask.title && newTask.boardId) {
       const addedTask = { ...newTask, id: tasks.length + 1 };
-      setListTasks([...tasks, newTask]);
+      setListTasks([...tasks, addedTask]);
     }
   }, [newTask]);
 
