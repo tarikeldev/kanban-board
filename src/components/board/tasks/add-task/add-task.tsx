@@ -16,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus } from "lucide-react"
-import { boards } from "../../board-container/board-container"
 import { useState } from "react"
 import TaskEntity from "@/domain/board-entities"
 import { useTaskStore } from "@/stores/taskStore"
@@ -25,6 +24,8 @@ import { useTaskStore } from "@/stores/taskStore"
 
 function AddTask() {
   const addTask = useTaskStore(state=>state.setNewTask)
+  const boards = useTaskStore(state=>state.boards)
+  
   const [newTask, setNewTask] = useState<TaskEntity>(new TaskEntity())
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()

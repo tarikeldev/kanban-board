@@ -13,7 +13,7 @@ const generateTasks = (count: number): TaskEntity[] => {
     tasks.push({
       id: i,
       title: `Task-${paddedId}`,
-      assigne: assignees[assigneeIndex] + (Math.floor(Math.random() * 5) + 1), // Add random number suffix
+      assignee: assignees[assigneeIndex] + (Math.floor(Math.random() * 5) + 1), // Add random number suffix
       boardId: boardId,
     });
   }
@@ -25,6 +25,7 @@ const stressTestTasks: TaskEntity[] = generateTasks(10);
 const tasks: TaskEntity[] = stressTestTasks
 interface TaskStore {
   tasks: TaskEntity[];
+  boards: any[];
   draggedTask: TaskEntity | null;
   newTask: TaskEntity | null;
   updatedTask: TaskEntity   | null;
@@ -34,10 +35,12 @@ interface TaskStore {
   setUpdateTask: (task: TaskEntity) => void;
   setDraggedTask: (task: TaskEntity) => void;
   setListTasks: (tasks: TaskEntity[]) => void;
+  setListBoards: (boards: any[]) => void;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
   tasks:tasks,
+  boards: [],
   newTask: null,
   updatedTask: null,
   draggedTask: null,
@@ -55,5 +58,6 @@ export const useTaskStore = create<TaskStore>((set) => ({
     updatedTask: task
     }),
   setListTasks: (tasks: TaskEntity[]) => set({ tasks: tasks}),
+  setListBoards: (boards: any[]) => set({ boards: boards})
   }));
 

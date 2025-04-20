@@ -30,7 +30,7 @@ function BoardTask({ task }: taskProps) {
       >
         <div className="flex-1 space-y-1">
           <p className="text-sm font-medium leading-none">{task.title}</p>
-          <p className="text-sm text-muted-foreground">{task.assigne}</p>
+          <p className="text-sm text-muted-foreground">{task.assignee}</p>
         </div>
       </div>
       {isOpen && (
