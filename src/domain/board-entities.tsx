@@ -2,7 +2,7 @@ class TaskEntity {
 
     id!: number;
     title!:  string;
-    assigne?: string;
+    assignee?: string;
     boardId?: number;
 
 }
