@@ -1,17 +1,20 @@
+import "./App.css";
+import NavBar from "./components/navbar/navbar";
+import KanbanBoard from "./pages/kanban-board/kanban-board";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import './App.css'
-import NavBar from "./components/navbar/navbar"
-import KanbanBoard from "./pages/kanban-board/kanban-board"
-
+const queryClient = new QueryClient();
 function App() {
   return (
     <>
-     <div className="bg-offwhite grid grid-cols-12 gap-4  ">
-      <NavBar/>
-     <KanbanBoard/>
-    </div>
+      <QueryClientProvider client={queryClient}>
+        <div className="bg-offwhite grid grid-cols-12 gap-4  ">
+          <NavBar />
+          <KanbanBoard />
+        </div>
+      </QueryClientProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

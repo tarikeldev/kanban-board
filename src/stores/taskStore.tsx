@@ -36,6 +36,7 @@ interface TaskStore {
   setDraggedTask: (task: TaskEntity) => void;
   setListTasks: (tasks: TaskEntity[]) => void;
   setListBoards: (boards: any[]) => void;
+  resetStore: () => void; // ✅ Reset state function
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
@@ -58,6 +59,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
     updatedTask: task
     }),
   setListTasks: (tasks: TaskEntity[]) => set({ tasks: tasks}),
-  setListBoards: (boards: any[]) => set({ boards: boards})
+  setListBoards: (boards: any[]) => set({ boards: boards}),
+  resetStore: () => set({ tasks: [], newTask: { id: 0, title: "", boardId: 0 } }), // ✅ Reset state function
   }));
 
