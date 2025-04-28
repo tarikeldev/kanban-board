@@ -8,42 +8,13 @@ import {
 
 import "./board-container.css";
 import BoardTask from "../board-task/board-task";
-import TaskEntity from "@/domain/board-entities";
-import { useEffect, useState } from "react";
+import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import { useTaskStore } from "@/stores/taskStore";
+import { TaskService } from "@/apis/tasks/taskService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BoardService } from "@/apis/board/boardService";
+import { useEffect } from "react";
 
-export const boards: any[] = [
-  {
-    id: 1,
-    title: "To Do",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 2,
-    title: "In Progress",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 3,
-    title: "Review",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 4,
-    title: "Resolved",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 5,
-    title: "Testing",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-];
 
 function BoardContainer() {
   return (
@@ -53,30 +24,25 @@ function BoardContainer() {
   );
 }
 
-function BoardCards() {
-  const { newTask, updatedTask, draggedTask, tasks, setListTasks } = useTaskStore();
-
-  useEffect(() => {
-    if (updatedTask && updatedTask.title && updatedTask.boardId) {      
-      setListTasks(
-        tasks.map((x) => (x.id === updatedTask.id ? updatedTask : x))
-      );
-    }
-  }, [updatedTask]);
-
-  useEffect(() => {
-    if (newTask && newTask.title && newTask.boardId) {
-      const addedTask = { ...newTask, id: tasks.length + 1 };
-      setListTasks([...tasks, addedTask]);
-    }
-  }, [newTask]);
+function  BoardCards() {
+  const { draggedTask } = useTaskStore();
+  const { data: tasks } = useQuery<TaskEntity[]>({queryKey:["tasks"], queryFn: async () => await TaskService.getAllTasks()});
+  const { data: boards } = useQuery<BoardEntity[]>({queryKey:["boards"], queryFn: async () => await BoardService.getAllBoards(), staleTime: Infinity});
+ 
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (task: TaskEntity) => await TaskService.updateTask(task),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:["tasks"]}); // Refresh only the task list
+    },
+  });
+   
 
   const handleOnDrop = (id: number) => {
     if (draggedTask && typeof draggedTask === "object") {
       const updatedTask = { ...draggedTask, boardId: id };
-      setListTasks(
-        tasks.map((task) => (task.id === draggedTask.id ? updatedTask : task))
-      );
+      mutation.mutate(updatedTask);     
+     
     }
   };
 
@@ -84,7 +50,7 @@ function BoardCards() {
     e.preventDefault();
   };
 
-  return boards.map((card) => (
+  return boards?.map((card) => (
     <Card
       key={card.id}
       className="border-gray-200 rounded-lg bg-white"
@@ -96,7 +62,8 @@ function BoardCards() {
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
       <CardContent>
-        {tasks
+        {tasks &&
+          tasks
           .filter((x) => x.boardId == card.id)
           .map((task: TaskEntity) => {
             return (

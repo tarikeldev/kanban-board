@@ -1,10 +1,13 @@
 class TaskEntity {
-
     id!: number;
-    title!:  string;
+    title!: string;
     assignee?: string;
     boardId?: number;
-
 }
 
-export default   TaskEntity
+class BoardEntity {
+    id!: number;
+    title!: string;
+}
+
+export { TaskEntity, BoardEntity };
