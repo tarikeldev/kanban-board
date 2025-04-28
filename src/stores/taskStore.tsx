@@ -1,28 +1,6 @@
-import TaskEntity from "@/domain/board-entities";
+import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import { create } from "zustand";
 
-const generateTasks = (count: number): TaskEntity[] => {
-  const tasks: TaskEntity[] = [];
-  const assignees = ["Tarik", "Ayo", "Islam", "Alaa", "Sara", "Alex", "Mohammed", "Fatima", "John", "Priya", "Carlos", "Mei"];
-  
-  for (let i = 1; i <= count; i++) {
-    const paddedId = i.toString().padStart(4, '0');
-    const assigneeIndex = Math.floor(Math.random() * assignees.length);
-    const boardId = Math.floor(Math.random() * 5) + 1; // Random board ID between 1-5
-    
-    tasks.push({
-      id: i,
-      title: `Task-${paddedId}`,
-      assignee: assignees[assigneeIndex] + (Math.floor(Math.random() * 5) + 1), // Add random number suffix
-      boardId: boardId,
-    });
-  }
-  
-  return tasks;
-};
-
-const stressTestTasks: TaskEntity[] = generateTasks(10);
-const tasks: TaskEntity[] = stressTestTasks
 interface TaskStore {
   tasks: TaskEntity[];
   boards: any[];
@@ -40,7 +18,7 @@ interface TaskStore {
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
-  tasks:tasks,
+  tasks:[],
   boards: [],
   newTask: null,
   updatedTask: null,
@@ -59,7 +37,7 @@ export const useTaskStore = create<TaskStore>((set) => ({
     updatedTask: task
     }),
   setListTasks: (tasks: TaskEntity[]) => set({ tasks: tasks}),
-  setListBoards: (boards: any[]) => set({ boards: boards}),
-  resetStore: () => set({ tasks: [], newTask: { id: 0, title: "", boardId: 0 } }), // ✅ Reset state function
+  setListBoards: (boards: BoardEntity[]) => set({ boards: boards}),
+  resetStore: () => set({ tasks: [], newTask: { id: 0, title: "", boardId: 0 } }),
   }));
 

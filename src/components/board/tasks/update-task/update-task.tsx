@@ -1,4 +1,4 @@
-import TaskEntity from "@/domain/board-entities";
+import { TaskEntity } from "@/domain/board-entities";
 import {
   DialogHeader,
   DialogFooter,
@@ -16,11 +16,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { boards } from "../../board-container/board-container";
-import { useCallback, useEffect, useState } from "react";
-import { useTaskStore } from "@/stores/taskStore";
+import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TaskService } from "@/apis/tasks/taskService";
+import { useTaskStore } from "@/stores/taskStore";
 
 function UpdateTask({
   task,
@@ -32,6 +31,7 @@ function UpdateTask({
   setDialogOpen: (open: boolean) => void;
 }) {
   const [editTask, setTask] = useState<TaskEntity>(task);
+  const { boards } = useTaskStore();
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (task: TaskEntity) => await TaskService.updateTask(task),

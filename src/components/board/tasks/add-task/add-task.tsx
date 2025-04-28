@@ -1,7 +1,3 @@
-"use client";
-
-import type React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   DialogHeader,
@@ -22,16 +18,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { boards } from "../../board-container/board-container";
 import { useCallback, useState } from "react";
-import TaskEntity from "@/domain/board-entities";
+import {BoardEntity, TaskEntity} from "@/domain/board-entities";
 import { TaskService } from "@/apis/tasks/taskService";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BoardService } from "@/apis/board/boardService";
 
 function AddTask() {
   const [newTask, setNewTask] = useState<TaskEntity>(new TaskEntity());
+  const { data: boards } = useQuery<BoardEntity[]>({queryKey:["boards"], queryFn: async () => await BoardService.getAllBoards(), staleTime: Infinity});
   const queryClient = useQueryClient();
 
+  console.log("boards",boards);
+  
   const mutation = useMutation({
     mutationFn: async (task: TaskEntity) => await TaskService.createTask(task),
     onSuccess: () => {
@@ -97,7 +96,7 @@ function AddTask() {
                   <SelectValue placeholder="Select board" />
                 </SelectTrigger>
                 <SelectContent>
-                  {boards.map((board) => (
+                  {boards?.map((board) => (
                     <SelectItem key={board.id} value={board.id.toString()}>
                       {board.title}
                     </SelectItem>

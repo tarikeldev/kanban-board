@@ -8,44 +8,13 @@ import {
 
 import "./board-container.css";
 import BoardTask from "../board-task/board-task";
-import TaskEntity from "@/domain/board-entities";
+import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import { useTaskStore } from "@/stores/taskStore";
 import { TaskService } from "@/apis/tasks/taskService";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BoardService } from "@/apis/board/boardService";
 import { useEffect } from "react";
 
-export const boards: any[] = [
-  {
-    id: 1,
-    title: "To Do",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 2,
-    title: "In Progress",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 3,
-    title: "Review",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 4,
-    title: "Resolved",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-  {
-    id: 5,
-    title: "Testing",
-    //order: 1 //means which column the board exist
-    tasks: new Array<TaskEntity>(),
-  },
-];
 
 function BoardContainer() {
   return (
@@ -57,7 +26,9 @@ function BoardContainer() {
 
 function  BoardCards() {
   const { draggedTask } = useTaskStore();
-  const { data } = useQuery<TaskEntity[]>({queryKey:["tasks"], queryFn: async () => await TaskService.getAllTasks()});
+  const { data: tasks } = useQuery<TaskEntity[]>({queryKey:["tasks"], queryFn: async () => await TaskService.getAllTasks()});
+  const { data: boards } = useQuery<BoardEntity[]>({queryKey:["boards"], queryFn: async () => await BoardService.getAllBoards(), staleTime: Infinity});
+ 
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (task: TaskEntity) => await TaskService.updateTask(task),
@@ -79,7 +50,7 @@ function  BoardCards() {
     e.preventDefault();
   };
 
-  return boards.map((card) => (
+  return boards?.map((card) => (
     <Card
       key={card.id}
       className="border-gray-200 rounded-lg bg-white"
@@ -91,8 +62,8 @@ function  BoardCards() {
         <CardDescription>Card Description</CardDescription>
       </CardHeader>
       <CardContent>
-        {data &&
-          data
+        {tasks &&
+          tasks
           .filter((x) => x.boardId == card.id)
           .map((task: TaskEntity) => {
             return (

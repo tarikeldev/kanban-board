@@ -1,5 +1,5 @@
 // src/api/task-service.js
-import TaskEntity from '@/domain/board-entities';
+import { TaskEntity } from "@/domain/board-entities";
 import axios from 'axios';
 
 // Create axios instance with base configuration
