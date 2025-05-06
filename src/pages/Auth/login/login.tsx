@@ -9,12 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/stores/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [error, setError] = useState<string | null>(null);
-
+  const {login} = useAuthStore();
+  let navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: async ({
       email,
@@ -25,11 +28,13 @@ function Login() {
     }) => await AuthService.login(email, password),
     onSuccess: (response) => {
       localStorage.setItem("access_token", response.token);
+      login();
+      navigate("/", { replace: true });
       setError(null);
-      // Optionally redirect or show success
     },
     onError: (err: any) => {
       setError("Invalid username or password.");
+      
     },
   });
 
@@ -63,6 +68,7 @@ function Login() {
               type="password"
               name="password"
               placeholder="Password"
+              autoComplete="current-password"
               required
             />
             {error && <div className="text-red-500 text-sm mt-2">{error}</div>}

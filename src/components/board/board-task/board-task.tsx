@@ -1,4 +1,4 @@
-import TaskEntity from "@/domain/board-entities";
+import {TaskEntity} from "@/domain/board-entities";
 import { useEffect, useState } from "react";
 import UpdateTask from "../tasks/update-task/update-task";
 import { useTaskStore } from "@/stores/taskStore";
