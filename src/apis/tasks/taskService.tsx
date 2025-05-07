@@ -1,17 +1,11 @@
 // src/api/task-service.js
 import { TaskEntity } from "@/domain/board-entities";
-import axios from 'axios';
+import axiosBase from "../base/axiosBase";
 
 // Create axios instance with base configuration
-const apiClient = axios.create({
-  baseURL: 'https://localhost:44396/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
+const apiClient = axiosBase
 // Task endpoints
-const TASKS_URL = '/Tasks';
+const TASKS_URL = '/tasks';
 
 // Task service functions
 export const TaskService = {

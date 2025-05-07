@@ -1,17 +1,12 @@
 // src/api/board-service.js
 import { BoardEntity } from "@/domain/board-entities";
-import axios from 'axios';
+import axiosBase from "../base/axiosBase";
 
 // Create axios instance with base configuration
-const apiClient = axios.create({
-  baseURL: 'https://localhost:44396/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const apiClient = axiosBase
 
 // Board endpoints
-const BOARDS_URL = '/Boards';
+const BOARDS_URL = '/boards';
 
 // Board service functions
 export const BoardService = {

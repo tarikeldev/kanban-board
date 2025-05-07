@@ -1,10 +1,9 @@
 // src/api/board-service.js
+import axiosBase from '@/apis/base/axiosBase';
+import AxiosBase from '@/apis/base/axiosBase';
 import axios from 'axios';
 
-const apiClient = axios.create({
-  baseURL: "https://localhost:44396/api",
-  headers: { "Content-Type": "application/json" },
-});
+const apiClient = axiosBase;
 
 const AUTH_URL = '/Authentication';
 
