@@ -1,4 +1,4 @@
-import { TaskEntity } from "@/domain/board-entities";
+import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import {
   DialogHeader,
   DialogFooter,
@@ -17,9 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useCallback, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TaskService } from "@/apis/tasks/taskService";
 import { useTaskStore } from "@/stores/taskStore";
+import { BoardService } from "@/apis/board/boardService";
 
 function UpdateTask({
   task,
@@ -31,7 +32,7 @@ function UpdateTask({
   setDialogOpen: (open: boolean) => void;
 }) {
   const [editTask, setTask] = useState<TaskEntity>(task);
-  const { boards } = useTaskStore();
+  const { data: boards } = useQuery<BoardEntity[]>({queryKey:["boards"], queryFn: async () => await BoardService.getAllBoards()});
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (task: TaskEntity) => await TaskService.updateTask(task),
@@ -89,7 +90,7 @@ function UpdateTask({
                   <SelectValue placeholder="Select board" />
                 </SelectTrigger>
                 <SelectContent>
-                  {boards.map((board) => (
+                  {boards?.map((board) => (
                     <SelectItem key={board.id} value={board.id.toString()}>
                       {board.title}
                     </SelectItem>
