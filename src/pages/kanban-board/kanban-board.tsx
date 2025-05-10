@@ -1,7 +1,5 @@
 import BoardContainer from "@/components/board/board-container/board-container";
 import AddTask from "@/components/board/tasks/add-task/add-task";
-import TaskEntity from "@/domain/board-entities";
-import { useState } from "react";
 
 function KanbanBoard() {
   return (
