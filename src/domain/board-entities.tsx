@@ -1,6 +1,7 @@
 class TaskEntity {
     id!: number;
     title!: string;
+    description!: string;
     assignee?: string;
     boardId?: number;
 }

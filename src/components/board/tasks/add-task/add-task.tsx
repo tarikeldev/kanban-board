@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Plus, Regex } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import { TaskService } from "@/apis/tasks/taskService";
@@ -35,18 +35,10 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { taskSchema } from "@/lib/schemas/schemas";
 
-const schema = z.object({
-  title: z
-    .string()
-    .min(1, { message: "Title is required" })
-    .min(10, { message: "Title must be at least 10 characters long" }),
-  boardId: z
-    .number({ message: "Board is required" })
-    .min(1, { message: "Board is required" }),
-});
-
-type TaskFormValues = z.infer<typeof schema>;
+type TaskFormValues = z.infer<typeof taskSchema>;
 
 function AddTask() {
   const { data: boards } = useQuery<BoardEntity[]>({
@@ -57,9 +49,10 @@ function AddTask() {
   const queryClient = useQueryClient();
 
   const form = useForm<TaskFormValues, any, TaskFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(taskSchema),
     defaultValues: {
       title: "",
+      description: "",
       boardId: undefined,
     },
     mode: "all",
@@ -77,6 +70,7 @@ function AddTask() {
     const task = new TaskEntity();
     task.title = values.title;
     task.boardId = values.boardId;
+    task.description = values.description;
     mutation.mutate(task);
   }
 
@@ -106,6 +100,19 @@ function AddTask() {
                   <FormLabel>Task Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Task name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Description..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

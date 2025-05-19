@@ -30,6 +30,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { taskSchema } from "@/lib/schemas/schemas";
+import { Textarea } from "@/components/ui/textarea";
 
 function UpdateTask({
   task,
@@ -40,22 +42,14 @@ function UpdateTask({
   isOpen: boolean;
   setDialogOpen: (open: boolean) => void;
 }) {
-  const schema = z.object({
-    title: z
-      .string()
-      .min(1, { message: "Title is required" })
-      .min(10, { message: "Title must be at least 10 characters long" }),
-    boardId: z
-      .number({ message: "Board is required" })
-      .min(1, { message: "Board is required" }),
-  });
 
-  type TaskFormValues = z.infer<typeof schema>;
+  type TaskFormValues = z.infer<typeof taskSchema>;
   const form = useForm<TaskFormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(taskSchema),
     defaultValues: {
       title: task.title,
       boardId: task.boardId,
+      description: task.description,
     },
     mode: "all",
   });
@@ -78,11 +72,12 @@ function UpdateTask({
     newTask.id = task.id;
     newTask.title = values.title;
     newTask.boardId = values.boardId;
+    newTask.description = values.description;
     mutation.mutate(newTask);
   } 
   return (
     <Dialog open={isOpen} onOpenChange={setDialogOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent  className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Update Task</DialogTitle>
           <DialogDescription>Task {task.id}</DialogDescription>
@@ -102,6 +97,19 @@ function UpdateTask({
                 </FormItem>
               )}
             />
+                  <FormField
+                          control={form.control}
+                          name="description"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Description</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Description..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
             <FormField
               control={form.control}
               name="boardId"
