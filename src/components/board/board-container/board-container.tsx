@@ -50,31 +50,39 @@ function  BoardCards() {
     e.preventDefault();
   };
 
-  return boards?.map((card) => (
-    <Card
-      key={card.id}
-      className="border-gray-200 rounded-lg bg-white"
-      onDragOver={handleOnDragOver}
-      onDrop={() => handleOnDrop(card.id)}
-    >
-      <CardHeader>
-        <CardTitle>{card.title}</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {tasks &&
-          tasks
-          .filter((x) => x.boardId == card.id)
-          .map((task: TaskEntity) => {
-            return (
-              <div key={task.id} className="grid gap-10">
-                <BoardTask task={task} />
-              </div>
-            );
-          })}
-      </CardContent>
-    </Card>
-  ));
+  return boards?.map((card) => {
+    const taskCount = tasks ? tasks.filter((x) => x.boardId == card.id).length : 0;
+    return (
+      <Card
+        key={card.id}
+        className="border-gray-200 rounded-lg bg-white"
+        onDragOver={handleOnDragOver}
+        onDrop={() => handleOnDrop(card.id)}
+      >
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>{card.title}</CardTitle>
+            <span className="inline-block rounded-full bg-cyan-100 text-cyan-700 text-xs px-3 py-1 font-medium">
+              {taskCount} Tasks
+            </span>
+          </div>
+          <CardDescription>Card Description</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {tasks &&
+            tasks
+              .filter((x) => x.boardId == card.id)
+              .map((task: TaskEntity) => {
+                return (
+                  <div key={task.id} className="grid gap-10">
+                    <BoardTask task={task} />
+                  </div>
+                );
+              })}
+        </CardContent>
+      </Card>
+    );
+  });
 }
 
 export default BoardContainer;
