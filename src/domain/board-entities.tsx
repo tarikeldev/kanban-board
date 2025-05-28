@@ -2,8 +2,11 @@ class TaskEntity {
     id!: number;
     title!: string;
     description!: string;
-    assignee?: string;
+    username?: string;
     boardId?: number;
+    userId?: number;
+    createdAt!: Date;
+    priority?: number;
 }
 
 class BoardEntity {
