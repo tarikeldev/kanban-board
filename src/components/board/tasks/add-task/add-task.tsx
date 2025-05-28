@@ -22,11 +22,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BoardEntity, TaskEntity } from "@/domain/board-entities";
 import { TaskService } from "@/apis/tasks/taskService";
 import { BoardService } from "@/apis/board/boardService";
+import { UserService, CurrentUser } from "@/apis/auth/userService";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
-// shadcn form components
 import {
   Form,
   FormField,
@@ -37,6 +38,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { taskSchema } from "@/lib/schemas/schemas";
+import priority from "@/domain/enums/priority";
 
 type TaskFormValues = z.infer<typeof taskSchema>;
 
@@ -47,6 +49,7 @@ function AddTask() {
     staleTime: Infinity,
   });
   const queryClient = useQueryClient();
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
   const form = useForm<TaskFormValues, any, TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -54,6 +57,7 @@ function AddTask() {
       title: "",
       description: "",
       boardId: undefined,
+      priority: undefined,
     },
     mode: "all",
   });
@@ -66,11 +70,24 @@ function AddTask() {
     },
   });
 
+  useEffect(() => {
+    UserService.getCurrent()
+      .then(setCurrentUser)
+      .catch(() => setCurrentUser(null));
+
+  }, []);
+
   function onSubmit(values: TaskFormValues) {
+    if (!currentUser) return;
     const task = new TaskEntity();
+    
     task.title = values.title;
     task.boardId = values.boardId;
     task.description = values.description;
+    task.userId = currentUser.id;
+    task.username = currentUser.userName;
+    task.priority = values.priority;
+
     mutation.mutate(task);
   }
 
@@ -144,6 +161,44 @@ function AddTask() {
                               {board.title}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+               <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Priority</FormLabel>
+                  <FormControl>
+                    {/* Use a wrapper div to manually handle onBlur */}
+                    <div
+                      tabIndex={-1}
+                      onBlur={field.onBlur}
+                    >
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value ? String(field.value) : ""}
+                        defaultValue=""
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value={priority.LOW.toString()} className="text-blue-500">
+                          Low
+                        </SelectItem>
+                        <SelectItem value={priority.MEDIUM.toString()} className="text-yellow-500">
+                          Medium
+                        </SelectItem>
+                        <SelectItem value={priority.HIGH.toString()} className="text-red-500">
+                          High
+                        </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/form";
 import { taskSchema } from "@/lib/schemas/schemas";
 import { Textarea } from "@/components/ui/textarea";
+import priority from "@/domain/enums/priority";
 
 function UpdateTask({
   task,
@@ -50,6 +51,7 @@ function UpdateTask({
       title: task.title,
       boardId: task.boardId,
       description: task.description,
+      priority: task.priority,
     },
     mode: "all",
   });
@@ -73,6 +75,10 @@ function UpdateTask({
     newTask.title = values.title;
     newTask.boardId = values.boardId;
     newTask.description = values.description;
+    newTask.userId = task.userId;
+    newTask.username = task.username; 
+    newTask.priority = values.priority;
+    
     mutation.mutate(newTask);
   } 
   return (
@@ -97,6 +103,7 @@ function UpdateTask({
                 </FormItem>
               )}
             />
+
                   <FormField
                           control={form.control}
                           name="description"
@@ -110,11 +117,52 @@ function UpdateTask({
                             </FormItem>
                           )}
                         />
-            <FormField
+                        <div className="grid grid-cols-1 sm:grid-cols-2 items-baseline ">
+
+                       
+                                     <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Priority</FormLabel>
+                  <FormControl>
+                    {/* Use a wrapper div to manually handle onBlur */}
+                    <div
+                      tabIndex={-1}
+                      onBlur={field.onBlur}
+                    >
+                      <Select
+                        onValueChange={(value) => field.onChange(Number(value))}
+                        value={field.value ? String(field.value) : ""}
+                        defaultValue=""
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        <SelectItem value={priority.LOW.toString()} className="text-blue-500">
+                          Low
+                        </SelectItem>
+                        <SelectItem value={priority.MEDIUM.toString()} className="text-yellow-500">
+                          Medium
+                        </SelectItem>
+                        <SelectItem value={priority.HIGH.toString()} className="text-red-500">
+                          High
+                        </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField 
               control={form.control}
               name="boardId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem > 
                   <FormLabel>Board</FormLabel>
                   <FormControl>
                     {/* Use a wrapper div to manually handle onBlur */}
@@ -144,6 +192,7 @@ function UpdateTask({
                 </FormItem>
               )}
             />
+             </div>
             <DialogFooter className="sm:justify-start">
                 <Button type="submit" disabled={!form.formState.isValid}>
                   Submit
